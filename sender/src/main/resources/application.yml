@@ -1,0 +1,19 @@
+server:
+  port: 8080 # REST API Port
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 250MB
+      max-request-size: 250MB
+
+grpc:
+  client:
+    file-service: # This matches the name in the @GrpcClient annotation
+      address: 'static://receiver:9090' # Points to the docker-compose service name
+      negotiation-type: TLS # Enable TLS
+      security:
+        trust-cert-collection: classpath:certs/ca.crt
+        certificate-chain: classpath:certs/client.crt
+        client-auth-enabled: true
+        private-key: classpath:certs/client.key

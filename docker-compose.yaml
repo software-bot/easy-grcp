@@ -1,0 +1,51 @@
+
+services:
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=ft_db
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - grpc-network
+
+  receiver:
+    build:
+      context: ./receiver
+    ports:
+      - "9090:9090"
+    depends_on:
+      - mongodb
+    networks:
+      - grpc-network
+    volumes:
+      - "./app-data:/app/data"
+
+  sender:
+    build:
+      context: ./sender
+    ports:
+      - "8080:8080"
+    depends_on:
+      - receiver
+    networks:
+      - grpc-network
+
+  mongo-api:
+    build:
+      context: ./mongo-api
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    networks:
+      - grpc-network
+
+networks:
+  grpc-network:
+    driver: bridge
+
+volumes:
+  mongo-data:

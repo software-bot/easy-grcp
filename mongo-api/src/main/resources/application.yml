@@ -1,0 +1,6 @@
+server:
+  port: 8081
+
+spring:
+  mongodb:
+    uri: mongodb://mongodb:27017/ft_db

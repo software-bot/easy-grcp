@@ -1,0 +1,13 @@
+grpc:
+  server:
+    port: 9090
+    security:
+      enabled: true
+      certificate-chain: classpath:certs/server.crt
+      private-key: classpath:certs/server.key
+      trust-cert-collection: classpath:certs/ca.crt
+      client-auth: REQUIRE
+
+spring:
+  mongodb:
+    uri: mongodb://mongodb:27017/ft_db

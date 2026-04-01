@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package filetransfer;
+
+option java_package = "com.local.tools.grpc";
+option java_multiple_files = true;
+
+service FileService {
+  // The client streams chunks to the server, server returns one status
+  rpc UploadFile(stream FileChunk) returns (UploadStatus);
+}
+
+message FileChunk {
+  bytes content = 1;
+  string filename = 2;
+}
+
+message UploadStatus {
+  bool success = 1;
+}
