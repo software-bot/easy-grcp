@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @Component
 @Scope("prototype")
-public class MongoOutputStreamObserver implements FileStreamObserver {
+public class MongoOutputStreamObserver implements StreamObserver<FileChunk> {
     private final AtomicInteger chunkCounter;
     private final GridFSBucket gridFSBucket;
     private StreamObserver<UploadStatus> responseObserver;
@@ -29,27 +29,9 @@ public class MongoOutputStreamObserver implements FileStreamObserver {
         this.gridFSBucket = gridFSBucket;
     }
 
-    @Override
     public MongoOutputStreamObserver observe(StreamObserver<UploadStatus> responseObserver) {
         this.responseObserver = responseObserver;
         return this;
-    }
-
-    @Override
-    public void onCompleted() {
-        log.info("Completed receiving a file, closing output stream");
-        this.outputStream.close();
-
-        log.info("Sending upload status to client");
-        this.responseObserver.onNext(UploadStatus.newBuilder().setSuccess(true).build());
-        log.info("Sending completion notification to client");
-        this.responseObserver.onCompleted();
-    }
-
-    @Override
-    public void onError(Throwable t) {
-        log.error("Error receiving file from client", t);
-        this.outputStream.abort();
     }
 
     @Override
@@ -87,5 +69,22 @@ public class MongoOutputStreamObserver implements FileStreamObserver {
                 .withDescription("Server failed to write data: " + t.getMessage())
                 .withCause(t)
                 .asRuntimeException());
+    }
+
+    @Override
+    public void onCompleted() {
+        log.info("Completed receiving a file, closing output stream");
+        this.outputStream.close();
+
+        log.info("Sending upload status to client");
+        this.responseObserver.onNext(UploadStatus.newBuilder().setSuccess(true).build());
+        log.info("Sending completion notification to client");
+        this.responseObserver.onCompleted();
+    }
+
+    @Override
+    public void onError(Throwable t) {
+        log.error("Error receiving file from client", t);
+        this.outputStream.abort();
     }
 }
