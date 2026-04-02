@@ -25,7 +25,7 @@ openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in client.key.tmp -out c
 ```
 If you have path conversion issue, use `//CN` instead of `/CN`
 
-<h3>2. In the Receiver Project (`src/main/resources/certs/`):</h3>
+<h3>2. In the Receiver Project (src/main/resources/certs/):</h3>
 Copy files:
 
 ```
@@ -34,7 +34,7 @@ server.crt (To identify itself)
 server.key (To decrypt the traffic)
 ```
 
-<h3>3. In the Sender Project (`src/main/resources/certs/`):</h3>
+<h3>3. In the Sender Project (src/main/resources/certs/):</h3>
 Copy files:
 
 ```
